@@ -13,6 +13,10 @@ public class MatchRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public void save(Match match) {
+        entityManager.persist(match);
+    }
+
     public long countFinishedMatches(String playerName) {
         String jpql = """
                 select count(m) 

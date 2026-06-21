@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Scoreboard | Finished Match</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <script th:src="@{/resources/js/app.js}" defer></script>
+</head>
+<body>
+<header class="header">
+    <section class="nav-header">
+        <div class="brand">
+            <div class="nav-toggle">
+                <img th:src="@{/resources/images/menu.png}" src="/images/menu.png" alt="Menu" class="logo">
+            </div>
+            <span class="logo-text">TennisScoreboard</span>
+        </div>
+        <div>
+            <nav class="nav-links">
+                <a class="nav-link" th:href="@{/}">Home</a>
+                <a class="nav-link" th:href="@{/matches}">Matches</a>
+            </nav>
+        </div>
+    </section>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Finished match</h1>
+
+        <div class="current-match-image"></div>
+
+        <p class="table-text">
+            Match is over
+        </p>
+
+        <p class="table-text" th:if="${matchState.tieBreak}">
+            Final point was played in tie-break
+        </p>
+
+        <section class="score">
+            <table class="table">
+                <thead class="result">
+                <tr>
+                    <th class="table-text">Player</th>
+                    <th class="table-text">Sets</th>
+                    <th class="table-text">Games</th>
+                    <th class="table-text">Points</th>
+                    <th class="table-text">Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr class="player1">
+                    <td class="table-text" th:text="${matchState.player1Name}">Player 1</td>
+                    <td class="table-text" th:text="${matchState.player1Sets}">0</td>
+                    <td class="table-text" th:text="${matchState.player1Games}">0</td>
+                    <td class="table-text" th:text="${matchState.player1Points}">0</td>
+                    <td class="table-text"
+                        th:text="${matchState.player1Sets > matchState.player2Sets ? 'Winner' : 'Finished'}">
+                        Finished
+                    </td>
+                </tr>
+
+                <tr class="player2">
+                    <td class="table-text" th:text="${matchState.player2Name}">Player 2</td>
+                    <td class="table-text" th:text="${matchState.player2Sets}">0</td>
+                    <td class="table-text" th:text="${matchState.player2Games}">0</td>
+                    <td class="table-text" th:text="${matchState.player2Points}">0</td>
+                    <td class="table-text"
+                        th:text="${matchState.player2Sets > matchState.player1Sets ? 'Winner' : 'Finished'}">
+                        Finished
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div style="margin-top: 24px; text-align: center;">
+            <a class="score-btn" th:href="@{/}">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer">
+        <p>
+            &copy; Tennis Scoreboard, project from
+            <a href="https://zhukovsd.github.io/java-backend-learning-course/" target="_blank" rel="noopener noreferrer">
+                zhukovsd/java-backend-learning-course
+            </a>
+            roadmap.
+        </p>
+    </div>
+</footer>
+</body>
+</html>

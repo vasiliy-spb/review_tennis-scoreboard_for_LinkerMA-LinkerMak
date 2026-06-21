@@ -31,11 +31,15 @@ public class MatchState {
         score.update(winnerSide);
     }
 
-    public Optional<Long> getWinnerId() {
+    public Optional<Player> getWinner() {
         return score.getWinnerSide().map(side -> switch (side) {
-            case PLAYER_1 -> player1.getId();
-            case PLAYER_2 -> player2.getId();
+            case PLAYER_1 -> player1;
+            case PLAYER_2 -> player2;
         });
+    }
+
+    public boolean isOver() {
+        return score.isOver();
     }
 
     public void validatePlayerBelongsToMatch(Long id) {

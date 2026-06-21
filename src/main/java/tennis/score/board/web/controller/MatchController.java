@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import tennis.score.board.model.entity.Match;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tennis.score.board.model.entity.Player;
 import tennis.score.board.service.MatchService;
 import tennis.score.board.service.OngoingMatchService;
 import tennis.score.board.service.PlayerService;
+import tennis.score.board.service.updateresult.MatchStatus;
+import tennis.score.board.service.updateresult.UpdateMatchResult;
+import tennis.score.board.web.dto.MatchDTO;
 import tennis.score.board.web.dto.MatchStateDTO;
 import tennis.score.board.web.dto.MatchesPage;
 
@@ -35,6 +38,10 @@ public class MatchController {
                                 Model model) {
 
         MatchesPage matchesPage = matchService.getFinishedMatches(pageNumber, name);
+        for(MatchDTO match : matchesPage.matches()) {
+            System.out.println(match.player1Name() + " ||| " + match.player2Name() + " ||| " + match.winnerName());
+            System.out.println("===================");
+        }
         model.addAttribute("matchesPage", matchesPage);
 
         return "matches";
@@ -69,9 +76,21 @@ public class MatchController {
 
     @PostMapping("/match-score")
     public String updateMatchScore(@RequestParam("uuid") UUID uuid,
-                                   @RequestParam("winnerId") Long winnerId) {
+                                   @RequestParam("winnerId") Long winnerId,
+                                   RedirectAttributes redirectAttributes) {
 
-        Match match = ongoingMatchService.getMatchByUUID(uuid);
+        UpdateMatchResult updateMatchResult = ongoingMatchService.updateMatch(uuid, winnerId);
+
+        if(updateMatchResult.status() == MatchStatus.FINISHED) {
+            redirectAttributes.addFlashAttribute("matchState", updateMatchResult.matchState());
+            return "redirect:/matches/finished-match-score";
+        }
+
+        return "redirect:/matches/match-score?uuid=" + uuid.toString();
     }
 
+    @GetMapping("/finished-match-score")
+    public String getFinishedMatchScore() {
+        return "finished-match-score";
+    }
 }

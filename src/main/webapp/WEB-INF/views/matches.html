@@ -9,15 +9,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <script th:src="@{/js/app.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <script th:src="@{/resources/js/app.js}" defer></script>
 </head>
 <body>
 <header class="header">
     <section class="nav-header">
         <div class="brand">
             <div class="nav-toggle">
-                <img th:src="@{/images/menu.png}" src="/images/menu.png" alt="Menu" class="logo">
+                <img th:src="@{/resources/images/menu.png}" src="/images/menu.png" alt="Menu" class="logo">
             </div>
             <span class="logo-text">TennisScoreboard</span>
         </div>
@@ -48,7 +48,7 @@
         </form>
 
         <div class="matches-meta">
-            <p th:text="'Total matches: ' + ${matchesPage.totalItems}">Total matches: 0</p>
+            <p th:text="'Total matches: ' + ${matchesPage.totalMatches()}">Total matches: 0</p>
             <p th:if="${matchesPage.totalPages > 0}"
                th:text="'Page ' + ${matchesPage.currentPage} + ' of ' + ${matchesPage.totalPages}">
                 Page 1 of 1
@@ -70,8 +70,8 @@
             </tr>
 
             <tr th:each="match : ${matchesPage.matches}">
-                <td th:text="${match.playerOneName}">Rafael Nadal</td>
-                <td th:text="${match.playerTwoName}">Roger Federer</td>
+                <td th:text="${match.player1Name}">Rafael Nadal</td>
+                <td th:text="${match.player2Name}">Roger Federer</td>
                 <td>
                     <span class="winner-name-td" th:text="${match.winnerName}">Rafael Nadal</span>
                 </td>
@@ -82,9 +82,10 @@
         <div class="pagination" th:if="${matchesPage.totalPages > 1}">
             <a class="prev"
                th:classappend="${!matchesPage.hasPrevious} ? ' disabled' : ''"
-               th:href="${matchesPage.hasPrevious}
-                        ? @{/matches(page=${matchesPage.currentPage - 1}, filter_by_player_name=${matchesPage.filterByPlayerName})}
-                        : @{/matches(page=${matchesPage.currentPage}, filter_by_player_name=${matchesPage.filterByPlayerName})}">
+               th:href="@{/matches(
+       page=${matchesPage.hasPrevious ? matchesPage.currentPage - 1 : matchesPage.currentPage},
+       filter_by_player_name=${matchesPage.filterByPlayerName}
+   )}">
                 &lt;
             </a>
 
@@ -98,9 +99,10 @@
 
             <a class="next"
                th:classappend="${!matchesPage.hasNext} ? ' disabled' : ''"
-               th:href="${matchesPage.hasNext}
-                        ? @{/matches(page=${matchesPage.currentPage + 1}, filter_by_player_name=${matchesPage.filterByPlayerName})}
-                        : @{/matches(page=${matchesPage.currentPage}, filter_by_player_name=${matchesPage.filterByPlayerName})}">
+               th:href="@{/matches(
+       page=${matchesPage.hasNext ? matchesPage.currentPage + 1 : matchesPage.currentPage},
+       filter_by_player_name=${matchesPage.filterByPlayerName}
+   )}">
                 &gt;
             </a>
         </div>

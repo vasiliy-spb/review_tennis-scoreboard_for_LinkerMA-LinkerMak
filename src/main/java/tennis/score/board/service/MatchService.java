@@ -28,6 +28,11 @@ public class MatchService {
     }
 
     @Transactional
+    public void saveMatch(Match match) {
+        matchRepository.save(match);
+    }
+
+    @Transactional
     public MatchesPage getFinishedMatches(Integer pageNumber, String name) {
         if(pageNumber == null || pageNumber < 1) pageNumber = 1;
         String normalizedName = normalizedName(name);

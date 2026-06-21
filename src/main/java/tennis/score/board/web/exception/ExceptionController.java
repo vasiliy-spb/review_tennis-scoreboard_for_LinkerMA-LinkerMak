@@ -1,4 +1,4 @@
-package tennis.score.board.web.controller;
+package tennis.score.board.web.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

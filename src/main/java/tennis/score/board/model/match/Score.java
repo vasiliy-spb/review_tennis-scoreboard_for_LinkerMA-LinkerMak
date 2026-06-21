@@ -50,11 +50,11 @@ public class Score {
                 points.reset();
             }
         }
-        else if(points.getPlayer1() == 4 && points.getPlayer1() - points.getPlayer2() == 2) {
+        else if(points.getPlayer1() == 4 && points.getPlayer1() - points.getPlayer2() >= 2) {
             games.incrementPlayer1();
             points.reset();
         }
-        else if(points.getPlayer2() == 4 && points.getPlayer2() - points.getPlayer1() == 2) {
+        else if(points.getPlayer2() == 4 && points.getPlayer2() - points.getPlayer1() >= 2) {
             games.incrementPlayer2();
             points.reset();
         }
@@ -74,11 +74,11 @@ public class Score {
                 tieBreak = true;
             }
         }
-        else if(games.getPlayer1() == 6 && games.getPlayer1() - games.getPlayer2() == 2) {
+        else if(games.getPlayer1() == 6 && games.getPlayer1() - games.getPlayer2() >= 2) {
             sets.incrementPlayer1();
             games.reset();
         }
-        else if(games.getPlayer2() == 6 && games.getPlayer2() - games.getPlayer1() == 2) {
+        else if(games.getPlayer2() == 6 && games.getPlayer2() - games.getPlayer1() >= 2) {
             sets.incrementPlayer2();
             games.reset();
         }

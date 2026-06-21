@@ -6,19 +6,18 @@ import tennis.score.board.exception.EntityNotFoundException;
 import tennis.score.board.model.entity.Match;
 import tennis.score.board.model.entity.Player;
 import tennis.score.board.model.match.MatchState;
+import tennis.score.board.service.updateresult.MatchStatus;
+import tennis.score.board.service.updateresult.UpdateMatchResult;
 import tennis.score.board.web.dto.MatchStateDTO;
 import tennis.score.board.web.mapper.MatchStateMapper;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class OngoingMatchService {
 
     private final Map<UUID, MatchState> matches = new ConcurrentHashMap<>();
-
     private final MatchStateMapper matchStateMapper;
 
     private final MatchService matchService;
@@ -40,28 +39,36 @@ public class OngoingMatchService {
         return matchStateMapper.toMatchStateDTO(matches.get(uuid));
     }
 
-    public MatchStateDTO updateMatch(UUID uuid, Long winnerId) {
+    public UpdateMatchResult updateMatch(UUID uuid, Long winnerId) {
         validateMatchExistence(uuid);
         MatchState match = matches.get(uuid);
         match.validatePlayerBelongsToMatch(winnerId);
 
         match.updateScore(winnerId);
+        MatchStateDTO matchStateDTO = matchStateMapper.toMatchStateDTO(match);
 
-        if(match.getScore().isOver()) {
-            Optional<Long> id = match.getWinnerId();
-
-            if(id.isEmpty()) {
-                throw new IllegalStateException("Id победителя не было получено");
-            }
-
-            matches.remove(uuid);
-
-            matchService.save(new Match(
-
-            ));
+        if(match.isOver()) {
+            handleMatchOver(match, uuid);
+            return new UpdateMatchResult(MatchStatus.FINISHED, matchStateDTO);
         }
 
+        return new UpdateMatchResult(MatchStatus.ONGOING, matchStateDTO);
+    }
 
+    private void handleMatchOver(MatchState match, UUID uuid) {
+        Optional<Player> winner = match.getWinner();
+
+        if(winner.isEmpty()) {
+            throw new IllegalStateException("Не удалоь определить победителя завершенного матча");
+        }
+
+        matches.remove(uuid);
+
+        matchService.saveMatch(new Match(
+                match.getPlayer1(),
+                match.getPlayer2(),
+                winner.get()
+        ));
     }
 
     public void validateMatchExistence(UUID uuid) {
