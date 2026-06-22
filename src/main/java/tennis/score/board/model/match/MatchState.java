@@ -38,10 +38,6 @@ public class MatchState {
         });
     }
 
-    public boolean isOver() {
-        return score.isOver();
-    }
-
     public void validatePlayerBelongsToMatch(Long id) {
         if(!Objects.equals(id, player1.getId()) && !Objects.equals(id, player2.getId())) {
             throw new PlayerNotInMatchException(id);

@@ -21,7 +21,14 @@ public class PlayerRepository {
                 .findFirst();
     }
 
-    public void save(Player player) {
+    public Player save(Player player) {
         entityManager.persist(player);
+        return player;
+    }
+
+    public Player saveAndFlush(Player player) {
+        save(player);
+        entityManager.flush();
+        return player;
     }
 }

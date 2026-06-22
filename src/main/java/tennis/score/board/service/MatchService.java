@@ -39,14 +39,15 @@ public class MatchService {
 
         long totalMatches = (normalizedName == null)
                 ? matchRepository.countFinishedMatches()
-                : matchRepository.countFinishedMatches(name);
+                : matchRepository.countFinishedMatches(normalizedName);
 
         int offset = calculateOffset(pageNumber);
         int totalPages = calculateTotalPages(totalMatches);
+        pageNumber = normalizedPageNumber(pageNumber, totalPages);
 
         List<MatchDTO> matches = ((normalizedName == null)
                 ? matchRepository.findAllMatches(offset, PAGE_SIZE)
-                : matchRepository.findAllMatches(name, offset, PAGE_SIZE))
+                : matchRepository.findAllMatches(normalizedName, offset, PAGE_SIZE))
                 .stream()
                 .map(matchMapper::toMatchDTO)
                 .toList();
@@ -59,7 +60,7 @@ public class MatchService {
                 PAGE_SIZE,
                 pageNumber > 1,
                 pageNumber < totalPages,
-                name
+                normalizedName
         );
     }
 
@@ -68,7 +69,7 @@ public class MatchService {
     }
 
     private int calculateTotalPages(long countMatches) {
-        return (int) ceil((double) countMatches / PAGE_SIZE);
+        return Math.max((int) ceil((double) countMatches / PAGE_SIZE), 1);
     }
 
     private static String normalizedName(String name) {
@@ -76,6 +77,10 @@ public class MatchService {
 
         String trimmed = name.trim();
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private static Integer normalizedPageNumber(Integer pageNumber, Integer totalPages) {
+        return Math.min((pageNumber == null || pageNumber < 1) ? 1 : pageNumber, totalPages);
     }
 
 }

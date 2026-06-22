@@ -35,19 +35,17 @@ public class OngoingMatchService {
     }
 
     public MatchStateDTO getMatchByUUID(UUID uuid) {
-        validateMatchExistence(uuid);
-        return matchStateMapper.toMatchStateDTO(matches.get(uuid));
+        return matchStateMapper.toMatchStateDTO(getExistingMatch(uuid));
     }
 
     public UpdateMatchResult updateMatch(UUID uuid, Long winnerId) {
-        validateMatchExistence(uuid);
-        MatchState match = matches.get(uuid);
+        MatchState match = getExistingMatch(uuid);
         match.validatePlayerBelongsToMatch(winnerId);
 
         match.updateScore(winnerId);
         MatchStateDTO matchStateDTO = matchStateMapper.toMatchStateDTO(match);
 
-        if(match.isOver()) {
+        if(match.getScore().isOver()) {
             handleMatchOver(match, uuid);
             return new UpdateMatchResult(MatchStatus.FINISHED, matchStateDTO);
         }
@@ -56,25 +54,25 @@ public class OngoingMatchService {
     }
 
     private void handleMatchOver(MatchState match, UUID uuid) {
-        Optional<Player> winner = match.getWinner();
-
-        if(winner.isEmpty()) {
-            throw new IllegalStateException("Не удалоь определить победителя завершенного матча");
-        }
+        Player winner = match.getWinner()
+                .orElseThrow(() -> new IllegalStateException("Не удалось определить победителя завершенного матча"));
 
         matches.remove(uuid);
 
         matchService.saveMatch(new Match(
                 match.getPlayer1(),
                 match.getPlayer2(),
-                winner.get()
+                winner
         ));
     }
 
-    public void validateMatchExistence(UUID uuid) {
-        if(!matches.containsKey(uuid)) {
+    private MatchState getExistingMatch(UUID uuid) {
+        MatchState matchState = matches.get(uuid);
+        if(matchState == null) {
             throw new EntityNotFoundException("Сущность матча по id = " + uuid + " не найдена");
         }
+
+        return matchState;
     }
 
 }

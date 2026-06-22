@@ -11,9 +11,9 @@ import tennis.score.board.service.OngoingMatchService;
 import tennis.score.board.service.PlayerService;
 import tennis.score.board.service.updateresult.MatchStatus;
 import tennis.score.board.service.updateresult.UpdateMatchResult;
-import tennis.score.board.web.dto.MatchDTO;
 import tennis.score.board.web.dto.MatchStateDTO;
 import tennis.score.board.web.dto.MatchesPage;
+import tennis.score.board.web.validator.InputStringValidator;
 
 import java.util.UUID;
 
@@ -36,7 +36,6 @@ public class MatchController {
     public String getFinishedMatches(@RequestParam(value = "page", required = false, defaultValue = "1") Integer pageNumber,
                                 @RequestParam(value = "filter_by_player_name", required = false) String name,
                                 Model model) {
-
         MatchesPage matchesPage = matchService.getFinishedMatches(pageNumber, name);
         model.addAttribute("matchesPage", matchesPage);
 
@@ -51,6 +50,9 @@ public class MatchController {
     @PostMapping("/new-match")
     public String createMatch(@RequestParam("playerOne") String namePlayer1,
                               @RequestParam("playerTwo") String namePlayer2) {
+        InputStringValidator.validateName(namePlayer1);
+        InputStringValidator.validateName(namePlayer2);
+
         Player player1 = playerService.findOrCreate(namePlayer1);
         Player player2 = playerService.findOrCreate(namePlayer2);
 

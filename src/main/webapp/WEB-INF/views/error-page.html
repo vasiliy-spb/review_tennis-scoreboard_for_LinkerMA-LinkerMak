@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 720px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            padding: 32px;
+        }
+
+        .status {
+            display: inline-block;
+            margin-bottom: 16px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 32px;
+            line-height: 1.2;
+        }
+
+        .message {
+            margin: 0 0 24px;
+            font-size: 18px;
+            color: #374151;
+        }
+
+        .details {
+            margin-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 24px;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .label {
+            min-width: 100px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .value {
+            color: #4b5563;
+            word-break: break-word;
+        }
+
+        .actions {
+            margin-top: 32px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="card">
+        <div class="status">
+            <span th:text="${status}">500</span>
+            <span th:text="${error}">Internal Server Error</span>
+        </div>
+
+        <h1>Ошибка при обработке запроса</h1>
+
+        <p class="message" th:text="${message}">
+            Во время обработки запроса произошла ошибка.
+        </p>
+
+        <div class="details">
+            <div class="row">
+                <div class="label">Статус:</div>
+                <div class="value" th:text="${status}">500</div>
+            </div>
+
+            <div class="row">
+                <div class="label">Ошибка:</div>
+                <div class="value" th:text="${error}">Internal Server Error</div>
+            </div>
+
+            <div class="row">
+                <div class="label">Путь:</div>
+                <div class="value" th:text="${path}">/matches</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a class="btn" th:href="@{/matches/}">На главную</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
