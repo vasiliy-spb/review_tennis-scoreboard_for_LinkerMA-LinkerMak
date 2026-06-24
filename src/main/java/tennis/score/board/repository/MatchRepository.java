@@ -13,52 +13,56 @@ public class MatchRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public void save(Match match) {
-        entityManager.persist(match);
-    }
+    private static final String COUNT_FINISHED_MATCHES_JPQL = """
+                select count(m) 
+                from Match m
+                """;
 
-    public long countFinishedMatches(String playerName) {
-        String jpql = """
+    private static final String COUNT_FINISHED_MATCHES_JPQL_WITH_NAME_FILTER = """
                 select count(m) 
                 from Match m
                 where lower(m.player1.name) like :playerName
                 or lower(m.player2.name) like :playerName
                 """;
-        return entityManager.createQuery(jpql, Long.class)
+
+    private static final String FIND_ALL_MATCHES = """
+                select m
+                from Match m
+                order by m.id desc
+                """;
+
+    private static final String FIND_ALL_MATCHES_WITH_NAME_FILTER = """
+                select m
+                from Match m
+                where lower(m.player1.name) like :playerName
+                or lower(m.player2.name) like :playerName
+                order by m.id desc
+                """;
+
+    public void save(Match match) {
+        entityManager.persist(match);
+    }
+
+    public long countFinishedMatches(String playerName) {
+        return entityManager.createQuery(COUNT_FINISHED_MATCHES_JPQL_WITH_NAME_FILTER, Long.class)
                 .setParameter("playerName", normalizedNameFilter(playerName))
                 .getSingleResult();
     }
 
     public long countFinishedMatches() {
-        String jpql = """
-                select count(m) 
-                from Match m
-                """;
-        return entityManager.createQuery(jpql, Long.class)
+        return entityManager.createQuery(COUNT_FINISHED_MATCHES_JPQL, Long.class)
                 .getSingleResult();
     }
 
     public List<Match> findAllMatches(int offset, int pageSize) {
-        String jpql = """
-                select m
-                from Match m
-                order by m.id desc
-                """;
-        return entityManager.createQuery(jpql, Match.class)
+        return entityManager.createQuery(FIND_ALL_MATCHES, Match.class)
                 .setFirstResult(offset)
                 .setMaxResults(pageSize)
                 .getResultList();
     }
 
     public List<Match> findAllMatches(String playerName, int offset, int pageSize) {
-        String jpql = """
-                select m
-                from Match m
-                where lower(m.player1.name) like :playerName
-                or lower(m.player2.name) like :playerName
-                order by m.id desc
-                """;
-        return entityManager.createQuery(jpql, Match.class)
+        return entityManager.createQuery(FIND_ALL_MATCHES_WITH_NAME_FILTER, Match.class)
                 .setParameter("playerName", normalizedNameFilter(playerName))
                 .setFirstResult(offset)
                 .setMaxResults(pageSize)

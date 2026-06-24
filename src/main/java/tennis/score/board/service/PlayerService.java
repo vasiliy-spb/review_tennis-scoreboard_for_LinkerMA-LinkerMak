@@ -20,17 +20,11 @@ public class PlayerService {
     @Transactional
     public Player findOrCreate(String name) {
         String trimmedName = name.trim();
-        return playerRepository.findByName(trimmedName)
-                .orElseGet(() -> createOrGetExisting(trimmedName));
+        try {
+            return playerRepository.findByName(trimmedName)
+                    .orElseGet(() -> playerRepository.saveAndFlush(new Player(trimmedName)));
+        } catch(DataIntegrityViolationException e) {
+            throw new IllegalStateException("Ошибка при создании игрока после поиска " + name, e);        }
     }
 
-    private Player createOrGetExisting(String name) {
-        try{
-            Player newPlayer = new Player(name);
-            return playerRepository.saveAndFlush(newPlayer);
-        }catch(DataIntegrityViolationException e) {
-            return playerRepository.findByName(name)
-                    .orElseThrow(() -> new IllegalStateException("Не удалось получить или создать игрока с именем " + name, e));
-        }
-    }
  }

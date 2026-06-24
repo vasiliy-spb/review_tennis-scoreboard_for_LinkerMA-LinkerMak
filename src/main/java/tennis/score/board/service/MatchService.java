@@ -19,7 +19,7 @@ public class MatchService {
     private final MatchMapper matchMapper;
     private final MatchRepository matchRepository;
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 2;
 
     @Autowired
     public MatchService(MatchMapper matchMapper, MatchRepository matchRepository) {
