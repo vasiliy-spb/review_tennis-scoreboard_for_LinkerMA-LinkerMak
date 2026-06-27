@@ -1,4 +1,4 @@
-package tennis.score.board.model.match;
+package tennis.score.board.model.matchstate;
 
 public enum WinnerSide {
     PLAYER_1,

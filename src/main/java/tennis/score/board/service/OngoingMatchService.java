@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import tennis.score.board.exception.EntityNotFoundException;
 import tennis.score.board.model.entity.Match;
 import tennis.score.board.model.entity.Player;
-import tennis.score.board.model.match.MatchState;
+import tennis.score.board.model.matchstate.MatchState;
 import tennis.score.board.service.updateresult.MatchStatus;
 import tennis.score.board.service.updateresult.UpdateMatchResult;
 import tennis.score.board.web.dto.MatchStateDTO;
@@ -35,16 +35,16 @@ public class OngoingMatchService {
     }
 
     public MatchStateDTO getMatchByUUID(UUID uuid) {
-        return matchStateMapper.toMatchStateDTO(getExistingMatch(uuid));
+        return matchStateMapper.toMatchStateDTO(getExistingMatch(uuid).snapshot());
     }
 
     public UpdateMatchResult updateMatch(UUID uuid, Long winnerId) {
         MatchState match = getExistingMatch(uuid);
 
         match.updateScore(winnerId);
-        MatchStateDTO matchStateDTO = matchStateMapper.toMatchStateDTO(match);
+        MatchStateDTO matchStateDTO = matchStateMapper.toMatchStateDTO(match.snapshot());
 
-        if(match.getScore().isOver()) {
+        if(match.isOver()) {
             handleMatchOver(match, uuid);
             return new UpdateMatchResult(MatchStatus.FINISHED, matchStateDTO);
         }
@@ -53,8 +53,7 @@ public class OngoingMatchService {
     }
 
     private void handleMatchOver(MatchState match, UUID uuid) {
-        Player winner = match.getMatchWinner()
-                .orElseThrow(() -> new IllegalStateException("Не удалось определить победителя завершенного матча"));
+        Player winner = match.getMatchWinner();
 
         matches.remove(uuid);
 
