@@ -1,7 +1,6 @@
 package tennis.score.board.model.matchstate;
 
 import lombok.Getter;
-import tennis.score.board.exception.MatchAlreadyFinishedException;
 import tennis.score.board.model.entity.Player;
 import tennis.score.board.model.matchstate.match.MatchScore;
 import tennis.score.board.model.matchstate.match.MatchScoreSnapshot;
@@ -22,9 +21,6 @@ public class MatchState {
     }
 
     public void updateScore(WinnerSide winnerSide) {
-        if (isOver()) {
-            throw new MatchAlreadyFinishedException("Нельзя обновлять матч, когда он уже закончен");
-        }
         matchScore.pointWonBy(winnerSide);
     }
 

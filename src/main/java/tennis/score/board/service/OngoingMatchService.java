@@ -30,8 +30,7 @@ public class OngoingMatchService {
     private final MatchService matchService;
 
     private final Map<UUID, Long> removeAt = new ConcurrentHashMap<>();
-
-    private final static Long DELAY_MILLIS = 10_000L;
+    private final static long FINISHED_MATCH_GRACE_PERIOD_MILLIS = 10_000L;
 
     @Autowired
     public OngoingMatchService(MatchStateMapper matchStateMapper, MatchService matchService) {
@@ -55,32 +54,47 @@ public class OngoingMatchService {
         synchronized (match) {
             validatePlayerBelongsToMatch(match, winnerId);
 
+            if (match.isOver()) {
+                return handleMatchOverBeforeUpdate(match);
+            }
+
             WinnerSide winnerSide = (Objects.equals(winnerId, match.getPlayer1().getId()))
                     ? PLAYER_1
                     : PLAYER_2;
-
             match.updateScore(winnerSide);
-            MatchStateDTO matchStateDTO = matchStateMapper.toMatchStateDTO(match.snapshot());
 
             if (match.isOver()) {
-                handleMatchOver(match, uuid);
-                return new UpdateMatchResult(MatchStatus.FINISHED, matchStateDTO);
+                return handleMatchOverAfterUpdate(match, uuid);
             }
 
-            return new UpdateMatchResult(MatchStatus.ONGOING, matchStateDTO);
+            return handleMatchOngoing(match);
         }
     }
 
-    private void handleMatchOver(MatchState match, UUID uuid) {
+    private UpdateMatchResult handleMatchOngoing(MatchState match){
+        return new UpdateMatchResult(MatchStatus.ONGOING,
+                matchStateMapper.toMatchStateDTO(match.snapshot()));
+    }
+
+    private UpdateMatchResult handleMatchOverBeforeUpdate(MatchState match) {
+        return new UpdateMatchResult(
+                MatchStatus.FINISHED,
+                matchStateMapper.toMatchStateDTO(match.snapshot())
+        );
+    }
+
+    private UpdateMatchResult handleMatchOverAfterUpdate(MatchState match, UUID uuid) {
         Player winner = match.getMatchWinner();
 
-        removeAt.put(uuid, System.currentTimeMillis() + DELAY_MILLIS);
+        removeAt.put(uuid, System.currentTimeMillis() + FINISHED_MATCH_GRACE_PERIOD_MILLIS);
 
         matchService.saveMatch(new Match(
                 match.getPlayer1(),
                 match.getPlayer2(),
                 winner
         ));
+
+        return new UpdateMatchResult(MatchStatus.FINISHED, matchStateMapper.toMatchStateDTO(match.snapshot()));
     }
 
     private MatchState getExistingMatch(UUID uuid) {
