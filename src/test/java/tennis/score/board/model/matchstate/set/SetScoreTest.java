@@ -12,6 +12,8 @@ import static tennis.score.board.model.matchstate.WinnerSide.PLAYER_2;
 
 class SetScoreTest {
 
+    // Логику набора очков можно вынести во вспомогательный метод, чтобы не дублировать её в тестах
+
     private SetScore setScore;
 
     @BeforeEach

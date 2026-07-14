@@ -7,7 +7,7 @@ import tennis.score.board.model.matchstate.MatchState;
 import tennis.score.board.model.matchstate.ScoreboardSnapshot;
 import tennis.score.board.web.dto.MatchStateDTO;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring") // для "spring" в mapstruct есть специальная константа: MappingConstants.ComponentModel.SPRING
 public interface MatchStateMapper {
     MatchStateDTO toMatchStateDTO(ScoreboardSnapshot snapshot);
 }

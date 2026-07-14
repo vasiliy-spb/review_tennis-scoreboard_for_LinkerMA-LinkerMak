@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import tennis.score.board.model.entity.Match;
 import tennis.score.board.web.dto.MatchDTO;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring") // для "spring" в mapstruct есть специальная константа: MappingConstants.ComponentModel.SPRING
 public interface MatchMapper {
 
     @Mapping(source = "player1.name", target = "player1Name")

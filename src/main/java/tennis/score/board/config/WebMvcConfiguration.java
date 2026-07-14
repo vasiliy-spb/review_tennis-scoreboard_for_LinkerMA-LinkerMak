@@ -14,14 +14,17 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
-@EnableScheduling
+@EnableScheduling // @EnableScheduling можно вынести в отдельный класс (даже если он будет пустой),
+                        // чтобы отделить управление задачами от веб-слоя
 @Configuration
-@ComponentScan("tennis.score.board")
+@ComponentScan("tennis.score.board") // Здесь можно сканировать только "tennis.score.board.web.controller"
 @EnableWebMvc
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
+    // Если у класса есть ровно один конструктор, Spring автоматически использует его для внедрения зависимостей —
+        // даже без @Autowired. Можно удалить конструктор и поставить над классом @RequiredArgsConstructor
     @Autowired
     public WebMvcConfiguration(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -33,7 +36,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         templateResolver.setApplicationContext(applicationContext);
         templateResolver.setPrefix("/WEB-INF/views/");
         templateResolver.setSuffix(".html");
-        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setCharacterEncoding("UTF-8"); // Можно использовать StandardCharsets.UTF_8.name()
         return templateResolver;
     }
 
@@ -49,7 +52,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine());
-        resolver.setCharacterEncoding("UTF-8");
+        resolver.setCharacterEncoding("UTF-8"); // Можно использовать StandardCharsets.UTF_8.name()
 
         registry.viewResolver(resolver);
     }

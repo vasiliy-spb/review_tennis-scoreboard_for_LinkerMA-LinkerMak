@@ -10,7 +10,7 @@ public class WebMvcDispatcherServletInitializer extends AbstractAnnotationConfig
 
     @Override
     protected Class<?> [] getRootConfigClasses() {
-        return new Class[0];
+        return new Class[0]; // Здесь можно добавить загрузку PersistenceConfiguration.class
     }
 
     @Override
@@ -37,7 +37,7 @@ public class WebMvcDispatcherServletInitializer extends AbstractAnnotationConfig
 
     private static Filter getCharacterEncodingFilter() {
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-        characterEncodingFilter.setEncoding("UTF-8");
+        characterEncodingFilter.setEncoding("UTF-8"); // Можно использовать StandardCharsets.UTF_8.name()
         characterEncodingFilter.setForceEncoding(true);
 
         return characterEncodingFilter;

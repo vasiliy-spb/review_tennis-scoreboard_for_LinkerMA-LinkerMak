@@ -10,6 +10,9 @@ import static tennis.score.board.model.matchstate.WinnerSide.PLAYER_2;
 
 class MatchStateTest {
 
+    // Логику начисления очков должно быть возможным тестировать без участия JPA Entity.
+        // Это исправится после рефакторинга классов моделей.
+
     private Player player1;
     private Player player2;
     private MatchState matchState;

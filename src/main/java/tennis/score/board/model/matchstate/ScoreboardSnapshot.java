@@ -1,6 +1,10 @@
 package tennis.score.board.model.matchstate;
 
 public record ScoreboardSnapshot(
+
+        // Для счёта в гейме, сете и матче уже есть специальные GameScoreSnapshot, SetScoreSnapshot, MatchScoreSnapshot
+            // поэтому здесь можно использовать эти объекты.
+
         Long player1Id,
         Long player2Id,
         String player1Name,

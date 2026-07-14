@@ -79,6 +79,8 @@
             </tbody>
         </table>
 
+        <!-- Цикл от 1 до totalPages отображает сразу все существующие страницы.
+                Лучше сделать окно пагинации ограниченным текущей страницей +-2 вокруг неё -->
         <div class="pagination" th:if="${matchesPage.totalPages > 1}">
             <a class="prev"
                th:classappend="${!matchesPage.hasPrevious} ? ' disabled' : ''"

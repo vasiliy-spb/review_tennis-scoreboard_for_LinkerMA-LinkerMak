@@ -13,14 +13,19 @@ import tennis.score.board.web.dto.MatchesPage;
 @RequestMapping("/matches")
 public class MatchesController {
 
+    // Все повторяющиеся или важные строковые литералы лучше выносить в `private static final` константы с понятными именами.
+        // Именованная константа делает код более семантически понятным.
+
     private final MatchService matchService;
 
+    // Если у класса есть ровно один конструктор, Spring автоматически использует его для внедрения зависимостей —
+        // даже без @Autowired. Можно удалить конструктор и поставить над классом @RequiredArgsConstructor
     @Autowired
     public MatchesController(MatchService matchService) {
         this.matchService = matchService;
     }
 
-    @GetMapping()
+    @GetMapping() // Можно без пустых скобок
     public String getFinishedMatches(@RequestParam(value = "page", required = false, defaultValue = "1") Integer pageNumber,
                                      @RequestParam(value = "filter_by_player_name", required = false) String name,
                                      Model model) {

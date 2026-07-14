@@ -13,6 +13,9 @@ import org.hibernate.annotations.Check;
 @Getter
 public class Match {
 
+    // "Match" (с таким именем сейчас создаётся таблица для завершённых матчей) является зарезервированным словом в некоторых СУБД.
+        // Здесь проблем не будет, но лучше не выбирать такие названия. (см. файл "sql-keywords.md" в этом же пакете)
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

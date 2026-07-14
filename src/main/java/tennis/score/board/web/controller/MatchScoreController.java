@@ -17,8 +17,13 @@ import java.util.UUID;
 @Controller
 public class MatchScoreController {
 
+    // Все повторяющиеся или важные строковые литералы лучше выносить в `private static final` константы с понятными именами.
+        // Именованная константа делает код более семантически понятным.
+
     private final OngoingMatchService ongoingMatchService;
 
+    // Если у класса есть ровно один конструктор, Spring автоматически использует его для внедрения зависимостей —
+        // даже без @Autowired. Можно удалить конструктор и поставить над классом @RequiredArgsConstructor
     @Autowired
     public MatchScoreController(OngoingMatchService ongoingMatchService) {
         this.ongoingMatchService = ongoingMatchService;
@@ -42,6 +47,12 @@ public class MatchScoreController {
 
         UpdateMatchResult updateMatchResult = ongoingMatchService.updateMatch(uuid, winnerId);
 
+        // Можно после завершения матча показывать финальный счёт на той же странице (match-score)
+            // (не выполнять редирект, а просто заблокировать кнопки счёта)
+            // и тогда (а также после рефакторинга, предложенного в MatchStatus)
+            // необходимость в UpdateMatchResult исчезнет (класс можно будет удалить)
+            // и передавать в контроллер только MatchStateDTO, содержащий счёт.
+            // Так контроллер станет более тонким. (см. файл "fat-controller.md" в этом же пакете)
         if(updateMatchResult.status() == MatchStatus.FINISHED) {
             redirectAttributes.addFlashAttribute("matchState", updateMatchResult.matchState());
             return "redirect:/finished-match-score";

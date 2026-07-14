@@ -19,12 +19,18 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan("tennis.score.board")
+    // Здесь можно сканировать только "tennis.score.board.service", "tennis.score.board.repository", "tennis.score.board.web.mapper"
 @PropertySource("classpath:hibernate.properties")
 @EnableTransactionManagement
 public class PersistenceConfiguration {
 
+    // Все повторяющиеся или важные строковые литералы лучше выносить в `private static final` константы с понятными именами.
+        // Именованная константа делает код более семантически понятным.
+
     private final Environment env;
 
+    // Если у класса есть ровно один конструктор, Spring автоматически использует его для внедрения зависимостей —
+        // даже без @Autowired. Можно удалить конструктор и поставить над классом @RequiredArgsConstructor
     @Autowired
     public PersistenceConfiguration(Environment env) {
         this.env = env;
@@ -40,6 +46,8 @@ public class PersistenceConfiguration {
         return dataSource;
     }
 
+    // Можно внедрять бин DataSource как параметр метода. Spring автоматически найдёт бин типа DataSource
+        // (созданный методом dataSource()) и передаст его в entityManagerFactory при вызове.
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -54,6 +62,8 @@ public class PersistenceConfiguration {
         return factory;
     }
 
+    // Для устранения дублирования при добавлении каждого опционального свойства
+        // можно создать вспомогательный метод addPropertyIfPresent
     private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
@@ -71,6 +81,13 @@ public class PersistenceConfiguration {
 
         properties.put("jakarta.persistence.validation.mode", "none");
         return properties;
+    }
+
+    private void addPropertyIfPresent(Properties properties, String key) {
+        String value = env.getProperty(key);
+        if (value != null) {
+            properties.put(key, value);
+        }
     }
 
     @Bean

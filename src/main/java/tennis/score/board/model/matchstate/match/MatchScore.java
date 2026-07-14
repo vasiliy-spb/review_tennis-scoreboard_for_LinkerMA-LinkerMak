@@ -13,9 +13,14 @@ public class MatchScore {
 
     private SetScore setScore = new SetScore();
 
+    // Константы объявляются первыми (пишутся в самом верху) в классе.
     private final static int SETS_TO_WIN = 2;
 
     public void pointWonBy(WinnerSide winnerSide) {
+        // TODO: Нет проверки на то, что матч не завершён.
+            // Попытка начислить очко в уже завершённом матче — это не нормальная ситуация и
+            // должна приводить к исключению.
+
         Optional<WinnerSide> optionalWinnerSide = setScore.pointWonBy(winnerSide);
 
         optionalWinnerSide.ifPresent(this::handleFinishSet);
@@ -38,6 +43,8 @@ public class MatchScore {
 
     public WinnerSide getWinnerSide() {
         if(!isOver()) {
+
+            // Сообщения в исключениях принято писать на английском языке.
             throw new IllegalStateException("Попытка получить победителя, когда матч еще не закончен");
         }
 

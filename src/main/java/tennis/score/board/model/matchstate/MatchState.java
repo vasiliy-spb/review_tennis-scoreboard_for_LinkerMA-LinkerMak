@@ -7,6 +7,13 @@ import tennis.score.board.model.matchstate.match.MatchScoreSnapshot;
 
 public class MatchState {
 
+    // TODO: Класс хранит ссылки на JPA-сущности (`Player`). Использование объектов JPA Entity в доменной логике
+        // создаёт прямую зависимость доменного слоя от слоя персистентности (долговременного хранения данных)
+        // и смешивает слои приложения, что нарушает чистоту архитектуры.
+        // Это может привести к проблемам с ленивой загрузкой (`LazyInitializationException`)
+        // или к неожиданным изменениям в базе данных, если состояние `Player` будет изменено в ходе бизнес-логики.
+        // Доменные модели должны оперировать другими доменными моделями, а не сущностями, привязанными к базе данных.
+
     @Getter
     private final Player player1;
     @Getter
@@ -21,6 +28,9 @@ public class MatchState {
     }
 
     public void updateScore(WinnerSide winnerSide) {
+        // TODO: Нет проверки на то, что матч не завершён.
+            // Попытка начислить очко в уже завершённом матче — это не нормальная ситуация и
+            // должна приводить к исключению.
         matchScore.pointWonBy(winnerSide);
     }
 
@@ -38,6 +48,7 @@ public class MatchState {
     public ScoreboardSnapshot snapshot() {
         MatchScoreSnapshot matchScoreSnapshot = matchScore.snapshot();
 
+        // Вместо того чтобы разбирать MatchScoreSnapshot по частям, можно передать в ScoreboardSnapshot его целиком
         return new ScoreboardSnapshot(
                 player1.getId(),
                 player2.getId(),

@@ -1,3 +1,5 @@
+<!-- Комментарии из файлов конфигурации лучше удалять перед коммитом -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -9,8 +11,9 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-      <spring.version>6.2.5</spring.version>
+      <spring.version>6.2.5</spring.version> <!-- В зависимостях этой версии обнаружены уязвимости — стоит использовать более свежую версию -->
       <hibernate.version>6.3.2.Final</hibernate.version>
+    <!-- Версии других зависимостей (особенно повторяющиеся) тоже лучше вынести в properties -->
   </properties>
 
   <dependencies>

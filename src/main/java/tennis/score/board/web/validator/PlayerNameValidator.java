@@ -6,6 +6,14 @@ import java.util.regex.Pattern;
 
 public final class PlayerNameValidator {
 
+    // Можно использовать @UtilityClass из Lombok.
+
+    // Класс валидирует и нормализует значение — это нарушает Принцип единой ответственности (SRP).
+        // Валидатор должен заниматься только валидацией.
+
+    // Все повторяющиеся или важные строковые литералы лучше выносить в `private static final` константы с понятными именами.
+        // Именованная константа делает код более семантически понятным.
+
     private static final Pattern NAME_PATTERN =
             Pattern.compile("^[\\p{L}]+(?:[ '-][\\p{L}]+)*$");
 
