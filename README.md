@@ -1,3 +1,5 @@
+### [Ревью на реализацию проекта находится здесь](https://github.com/vasiliy-spb/review_tennis-scoreboard_for_LinkerMA-LinkerMak/blob/code-review/code-review/REVIEW_README.md)
+
 # Tennis Score Board
 
 Веб-приложение для отслеживания счёта теннисного матча в реальном времени.
